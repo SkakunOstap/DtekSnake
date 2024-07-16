@@ -249,11 +249,12 @@
 </body>
 <script>
     let date = new Date()
-    let endMessage = document.createElement("p")
-    endMessage.innerText = "Game over. Please restart the page to play again."
+    let message = document.createElement("p")
+    message.innerText = "'Default' snake game, wasd to control, press Space to start"
+    document.body.appendChild(message)
+    let inter;
     let matrix = []
     let cell = document.createElement("td")
-    cell.className = "cell-non-scheduled"
     for (const [index, tr] of Object.entries(document.querySelectorAll("tbody tr"))) {
         if (index == date.getDay() - 1) {
             tr.cells[0].className = "current-day"
@@ -261,34 +262,55 @@
         matrix.push([])
         for (let i = 0; i < 24; i++) {
             cell_copy = cell.cloneNode(true)
+            cell_copy.className = "cell-non-scheduled"
             tr.appendChild(cell_copy)
             matrix[index].push(cell_copy)
         }
     }
-    let snake = [{x: 20, y: 3}]
+    let snake
 
-    let direction = {x: -1, y: 0}
-    let old_direction = {x: -1, y: 0}
+    let direction
+    let old_direction
+
+    function init() {
+        message.innerText = ''
+        for (const td of document.querySelectorAll("tbody td")) {
+            td.className = "cell-non-scheduled"
+        }
+        snake = [{x: 20, y: 3}]
+
+        direction = {x: -1, y: 0}
+        old_direction = {x: -1, y: 0}
+        updateSnake(snake[0])
+        generateApple()
+    }
+
     window.addEventListener('keydown', (event) => {
-        switch (event.key) {
-            case 'w':
-                if (old_direction.x !== 0 && old_direction.y !== 1)
-                    direction = {x: 0, y: -1}
-                break
-            case 'a':
-                if (old_direction.x !== 1 && old_direction.y !== 0)
-                    direction = {x: -1, y: 0}
-                break
-            case 's':
-                if (old_direction.x !== 0 && old_direction.y !== -1)
-                    direction = {x: 0, y: 1}
-                break
-            case 'd':
-                if (old_direction.x !== -1 && old_direction.y !== 0)
-                    direction = {x: 1, y: 0}
-                break
-            default:
-                break
+        if (inter === undefined && event.key === ' ') {
+            init()
+            inter = setInterval(update, 130)
+        }
+        else {
+            switch (event.key) {
+                case 'w':
+                    if (old_direction.x !== 0 && old_direction.y !== 1)
+                        direction = {x: 0, y: -1}
+                    break
+                case 'a':
+                    if (old_direction.x !== 1 && old_direction.y !== 0)
+                        direction = {x: -1, y: 0}
+                    break
+                case 's':
+                    if (old_direction.x !== 0 && old_direction.y !== -1)
+                        direction = {x: 0, y: 1}
+                    break
+                case 'd':
+                    if (old_direction.x !== -1 && old_direction.y !== 0)
+                        direction = {x: 1, y: 0}
+                    break
+                default:
+                    break
+            }
         }
     })
 
@@ -316,7 +338,9 @@
         let new_cell = {x: snake[0].x + direction.x, y: snake[0].y + direction.y}
         if (new_cell.x < 0 || new_cell.y < 0 || new_cell.x > 23 || new_cell.y > 6 || matrix[new_cell.y][new_cell.x].className === "cell-scheduled") {
             clearInterval(inter)
-            document.body.appendChild(endMessage)
+            inter = undefined
+            message.innerText = "Game over. Press Space to restart."
+            document.body.appendChild(message)
         } else {
             snake.unshift(new_cell)
             if (matrix[new_cell.y][new_cell.x].className === "cell-scheduled-maybe") {
@@ -328,9 +352,5 @@
             old_direction = direction
         }
     }
-
-    updateSnake(snake[0])
-    generateApple()
-    const inter = setInterval(update, 200)
 </script>
 </html>
