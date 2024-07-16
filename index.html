@@ -286,25 +286,25 @@
     }
 
     window.addEventListener('keydown', (event) => {
-        if (inter === undefined && event.key === ' ') {
+        if (inter === undefined && event.code === 'Space') {
             init()
             inter = setInterval(update, 130)
         }
         else {
-            switch (event.key) {
-                case 'w':
+            switch (event.code) {
+                case 'KeyW':
                     if (old_direction.x !== 0 && old_direction.y !== 1)
                         direction = {x: 0, y: -1}
                     break
-                case 'a':
+                case 'KeyA':
                     if (old_direction.x !== 1 && old_direction.y !== 0)
                         direction = {x: -1, y: 0}
                     break
-                case 's':
+                case 'KeyS':
                     if (old_direction.x !== 0 && old_direction.y !== -1)
                         direction = {x: 0, y: 1}
                     break
-                case 'd':
+                case 'KeyD':
                     if (old_direction.x !== -1 && old_direction.y !== 0)
                         direction = {x: 1, y: 0}
                     break
