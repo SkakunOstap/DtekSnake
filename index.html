@@ -274,7 +274,7 @@
 
     function init() {
         message.innerText = ''
-        for (const td of document.querySelectorAll("tbody td")) {
+        for (const td of document.querySelectorAll("td.cell-scheduled, td.cell-scheduled-maybe")) {
             td.className = "cell-non-scheduled"
         }
         snake = [{x: 20, y: 3}]
